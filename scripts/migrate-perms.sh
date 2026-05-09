@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Redirect Claude Code's project-local permission file from ~/chat to
+# ~/deai/anthro-log via a symlink, so "always allow" choices accumulate
+# in the anthro-log repo instead of leaking into the unrelated ~/chat
+# project.
+#
+# RUN THIS WHILE CLAUDE CODE IS NOT RUNNING.
+#
+# After this script: backup at ~/chat/.claude/settings.local.json.bak,
+# symlink at ~/chat/.claude/settings.local.json → anthro-log target.
+# Run scripts/restore-perms.sh to undo.
+
+set -euo pipefail
+
+CHAT_FILE="$HOME/chat/.claude/settings.local.json"
+BACKUP_FILE="$CHAT_FILE.bak"
+ANTHRO_DIR="$HOME/deai/anthro-log/.claude"
+ANTHRO_FILE="$ANTHRO_DIR/settings.local.json"
+
+# --- safety: refuse if claude appears to be running ---
+if pgrep -fa 'claude(\b|/)' >/dev/null 2>&1; then
+  echo "ERROR: a 'claude' process appears to be running."
+  echo "Exit Claude Code first, then re-run this script."
+  pgrep -fa 'claude(\b|/)' || true
+  exit 1
+fi
+
+# --- already migrated? ---
+if [[ -L "$CHAT_FILE" ]]; then
+  current_target="$(readlink -f "$CHAT_FILE" || true)"
+  expected_target="$(readlink -f "$ANTHRO_FILE" 2>/dev/null || echo "$ANTHRO_FILE")"
+  if [[ "$current_target" == "$expected_target" ]]; then
+    echo "Already migrated: $CHAT_FILE -> $current_target"
+    exit 0
+  fi
+  echo "ERROR: $CHAT_FILE is a symlink but points elsewhere ($current_target)."
+  echo "Investigate before re-running."
+  exit 1
+fi
+
+# --- backup conflict? ---
+if [[ -e "$BACKUP_FILE" ]]; then
+  echo "ERROR: backup already exists at $BACKUP_FILE"
+  echo "Either restore-perms.sh was not run after the last session,"
+  echo "or a stale backup is in the way. Resolve before re-running."
+  exit 1
+fi
+
+# --- prep target ---
+mkdir -p "$ANTHRO_DIR"
+if [[ ! -e "$ANTHRO_FILE" ]]; then
+  echo "{}" > "$ANTHRO_FILE"
+  echo "Created empty target: $ANTHRO_FILE"
+fi
+
+# --- swap ---
+if [[ -e "$CHAT_FILE" ]]; then
+  mv "$CHAT_FILE" "$BACKUP_FILE"
+  echo "Backed up: $CHAT_FILE -> $BACKUP_FILE"
+else
+  echo "Note: no existing $CHAT_FILE — nothing to back up."
+fi
+
+ln -s "$ANTHRO_FILE" "$CHAT_FILE"
+echo "Linked:    $CHAT_FILE -> $ANTHRO_FILE"
+
+echo
+echo "Done. New 'always allow' permissions will accumulate at:"
+echo "  $ANTHRO_FILE"
+echo
+echo "Now run:  claude --resume"
+echo "Undo with: bash $(dirname "$0")/restore-perms.sh"
