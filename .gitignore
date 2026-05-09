@@ -1,3 +1,7 @@
 .env
 *.log
 .DS_Store
+
+# Per-user runtime accumulator for "always allow" answers.
+# Baseline shared rules live in .claude/settings.json (committed).
+.claude/settings.local.json

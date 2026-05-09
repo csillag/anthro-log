@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Bash(*)",
+      "Bash(until *)",
+      "Bash(while *)",
+      "Bash(for *)",
+      "Bash(if *)",
+      "Bash(do *)",
+      "Bash(done)",
+      "Bash(then *)",
+      "Bash(fi)",
+      "Bash(else *)",
+      "Bash(sleep *)",
+      "Bash(grep *)",
+      "Bash(tail *)",
+      "Bash(echo *)",
+      "WebFetch",
+      "WebSearch",
+      "Read(//tmp/**)",
+      "Read(//usr/lib/**)",
+      "Read(//home/csillag/deai/anthro-log/**)",
+      "Edit(//home/csillag/deai/anthro-log/**)",
+      "Write(//home/csillag/deai/anthro-log/**)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /usr*)",
+      "Bash(rm -rf /home*)",
+      "Bash(rm -rf /etc*)",
+      "Bash(rm -rf /var*)",
+      "Bash(rm -rf /opt*)",
+      "Bash(rm -rf /root*)",
+      "Bash(rm -rf /bin*)",
+      "Bash(rm -rf /sbin*)",
+      "Bash(rm -rf /lib*)",
+      "Bash(rm -rf /boot*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f *)"
+    ]
+  }
+}
