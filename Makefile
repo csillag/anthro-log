@@ -3,7 +3,7 @@ COMPOSE    := docker compose
 GF_PORT    ?= 3000
 PROM_PORT  ?= 9090
 
-.PHONY: help init install up down restart status logs logs-otel logs-prom logs-grafana env env-print verify clean reset
+.PHONY: help init install up down restart status logs logs-otel logs-prom logs-grafana env env-print verify clean reset install-shim uninstall-shim
 
 help:
 	@echo "anthro-log — Claude Code OTel → Prometheus → Grafana"
@@ -24,6 +24,9 @@ help:
 	@echo "  verify         Curl health endpoints"
 	@echo "  clean          Down + remove volumes (DATA LOSS)"
 	@echo "  reset          clean + up (fresh start)"
+	@echo ""
+	@echo "  install-shim   Replace 'claude' on PATH with auto-source shim"
+	@echo "  uninstall-shim Restore the original 'claude' binary path"
 	@echo ""
 	@echo "URLs (after 'make up'):"
 	@echo "  Grafana:    http://localhost:$(GF_PORT)   (admin/admin)"
@@ -94,3 +97,9 @@ clean:
 	$(COMPOSE) down -v
 
 reset: clean up
+
+install-shim:
+	bash scripts/install-shim.sh
+
+uninstall-shim:
+	bash scripts/uninstall-shim.sh

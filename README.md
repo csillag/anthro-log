@@ -29,6 +29,28 @@ claude                          # run claude as normal
 Open http://localhost:3000 (admin/admin). Dashboard "Claude Code — Tokens & Cost"
 appears under the **Claude Code** folder.
 
+## Auto-load env on every `claude` invocation (optional)
+
+Sourcing `claude-env.sh` per shell is friction. The repo ships a shim
+that replaces the `claude` command on `PATH` with a one-line wrapper
+that auto-sources the env file before exec'ing the real binary —
+transparent to all CLI args.
+
+```bash
+make install-shim     # replaces ~/local/bin/claude (or $SHIM_PATH)
+make uninstall-shim   # restores original
+```
+
+Disable temporarily for a single invocation:
+
+```bash
+ANTHRO_LOG_DISABLE=1 claude ...
+```
+
+The installer records prior state at `<shim-path>.original` so the
+uninstaller can restore exactly (symlink, regular file, or absent).
+Override locations via `SHIM_PATH=...` or `CLAUDE_REAL_BIN=...`.
+
 ## Sharing with another machine
 
 Other machines on the LAN can ship metrics to this stack. On the remote box:
