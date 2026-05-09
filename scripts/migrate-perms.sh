@@ -17,11 +17,23 @@ BACKUP_FILE="$CHAT_FILE.bak"
 ANTHRO_DIR="$HOME/deai/anthro-log/.claude"
 ANTHRO_FILE="$ANTHRO_DIR/settings.local.json"
 
-# --- safety: refuse if claude appears to be running ---
-if pgrep -fa 'claude(\b|/)' >/dev/null 2>&1; then
-  echo "ERROR: a 'claude' process appears to be running."
-  echo "Exit Claude Code first, then re-run this script."
-  pgrep -fa 'claude(\b|/)' || true
+# --- safety: refuse only if a claude session is using ~/chat as its cwd ---
+# (Other claude sessions in unrelated projects don't conflict — they don't
+# touch ~/chat/.claude/settings.local.json.)
+conflicts=()
+while IFS= read -r pid; do
+  [[ -z "$pid" ]] && continue
+  cwd="$(readlink "/proc/$pid/cwd" 2>/dev/null || true)"
+  case "$cwd" in
+    "$HOME/chat"|"$HOME/chat"/*) conflicts+=("$pid  $cwd") ;;
+  esac
+done < <(pgrep -x claude 2>/dev/null || true)
+
+if (( ${#conflicts[@]} > 0 )); then
+  echo "ERROR: claude session(s) still running with cwd in ~/chat:"
+  printf '  %s\n' "${conflicts[@]}"
+  echo "Exit those sessions, then re-run this script."
+  echo "(Other claude sessions in unrelated projects are fine — ignored.)"
   exit 1
 fi
 
