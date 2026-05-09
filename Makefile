@@ -1,0 +1,96 @@
+SHELL      := /bin/bash
+COMPOSE    := docker compose
+GF_PORT    ?= 3000
+PROM_PORT  ?= 9090
+
+.PHONY: help init install up down restart status logs logs-otel logs-prom logs-grafana env env-print verify clean reset
+
+help:
+	@echo "anthro-log — Claude Code OTel → Prometheus → Grafana"
+	@echo ""
+	@echo "Targets:"
+	@echo "  init           First-time setup: pull images + start stack + show next steps"
+	@echo "  install        Pull docker images"
+	@echo "  up             Start stack (detached)"
+	@echo "  down           Stop stack (keep volumes)"
+	@echo "  restart        Restart stack"
+	@echo "  status         Container status"
+	@echo "  logs           Tail all logs"
+	@echo "  logs-otel      Tail collector logs"
+	@echo "  logs-prom      Tail Prometheus logs"
+	@echo "  logs-grafana   Tail Grafana logs"
+	@echo "  env            Print 'source' command for Claude Code env"
+	@echo "  env-print      Print env vars (for 'eval')"
+	@echo "  verify         Curl health endpoints"
+	@echo "  clean          Down + remove volumes (DATA LOSS)"
+	@echo "  reset          clean + up (fresh start)"
+	@echo ""
+	@echo "URLs (after 'make up'):"
+	@echo "  Grafana:    http://localhost:$(GF_PORT)   (admin/admin)"
+	@echo "  Prometheus: http://localhost:$(PROM_PORT)"
+
+init: install up
+	@echo ""
+	@echo "Stack running."
+	@echo "  Grafana:    http://localhost:$(GF_PORT)   (admin/admin — change on first login)"
+	@echo "  Prometheus: http://localhost:$(PROM_PORT)"
+	@echo ""
+	@echo "Next: enable Claude Code telemetry in any shell that runs 'claude':"
+	@echo "  source $(CURDIR)/claude-env.sh"
+	@echo ""
+	@echo "Then run claude as usual. Metrics appear within ~10s."
+
+install:
+	$(COMPOSE) pull
+
+up:
+	$(COMPOSE) up -d
+	@$(MAKE) --no-print-directory status
+
+down:
+	$(COMPOSE) down
+
+restart:
+	$(COMPOSE) restart
+
+status:
+	@$(COMPOSE) ps
+
+logs:
+	$(COMPOSE) logs -f --tail=100
+
+logs-otel:
+	$(COMPOSE) logs -f --tail=200 otel-collector
+
+logs-prom:
+	$(COMPOSE) logs -f --tail=200 prometheus
+
+logs-grafana:
+	$(COMPOSE) logs -f --tail=200 grafana
+
+env:
+	@echo "source $(CURDIR)/claude-env.sh"
+
+env-print:
+	@cat claude-env.sh
+
+verify:
+	@echo "== Collector health =="
+	@curl -fsS http://localhost:13133 && echo "  OK" || echo "  FAIL"
+	@echo "== Prometheus ready =="
+	@curl -fsS http://localhost:$(PROM_PORT)/-/ready && echo "  OK" || echo "  FAIL"
+	@echo "== Grafana health =="
+	@curl -fsS http://localhost:$(GF_PORT)/api/health || echo "  FAIL"
+	@echo ""
+	@echo "== Prometheus targets =="
+	@curl -fsS "http://localhost:$(PROM_PORT)/api/v1/targets?state=active" \
+		| grep -oE '"health":"[^"]+"|"scrapeUrl":"[^"]+"' || true
+	@echo ""
+	@echo "== Sample metric query (claude_code_token_usage_tokens_total) =="
+	@curl -fsS "http://localhost:$(PROM_PORT)/api/v1/query?query=claude_code_token_usage_tokens_total" \
+		| head -c 800; echo
+
+clean:
+	$(COMPOSE) down -v
+
+reset: clean up
