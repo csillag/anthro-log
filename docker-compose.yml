@@ -1,6 +1,6 @@
 services:
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.116.0
+    image: otel/opentelemetry-collector-contrib:0.119.0
     container_name: anthro-log-otel
     restart: unless-stopped
     command: ["--config=/etc/otel-collector-config.yaml"]
