@@ -1,7 +1,15 @@
 apiVersion: 1
 
+# Drop any previously provisioned Prometheus datasource so we can re-create
+# it with a pinned UID. (Without this, restarting Grafana would leave the
+# auto-UID datasource in place alongside ours.)
+deleteDatasources:
+  - name: Prometheus
+    orgId: 1
+
 datasources:
   - name: Prometheus
+    uid: prometheus            # pinned — referenced by dashboard JSON
     type: prometheus
     access: proxy
     url: http://prometheus:9090
