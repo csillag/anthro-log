@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Poll claude-usage and expose Anthropic subscription utilization as
-Prometheus metrics on HTTP_PORT/metrics.
+"""Poll claude-usage and expose Anthropic subscription utilization +
+profile info as Prometheus metrics on HTTP_PORT/metrics.
 
 Cross-machine accurate: data comes from Anthropic's own /api/oauth/usage
-endpoint via the bind-mounted claude-usage CLI, which reads the user's
-OAuth credentials. Reset timestamps are exposed as unix epoch seconds;
-compute "seconds until reset" in PromQL via `metric - time()`.
+and /api/oauth/profile endpoints via the bind-mounted claude-usage CLI.
+Reset timestamps are exposed as unix epoch seconds; compute "seconds
+until reset" in PromQL via `metric - time()`.
 """
 
 import json
@@ -56,12 +56,29 @@ poll_ts = Gauge(
     "claude_subscription_poll_timestamp_seconds",
     "Unix timestamp of the last successful poll",
 )
+plan_info = Gauge(
+    "claude_subscription_plan_info",
+    "Subscription plan info (always 1; carries plan/tier/status/org_type labels)",
+    ["plan", "tier", "status", "org_type"],
+)
+
+
+_PLAN_TOKEN_MAP = {"claude": "Claude", "max": "Max", "pro": "Pro"}
+
+
+def _format_plan_name(rate_limit_tier):
+    """Turn 'default_claude_max_20x' into 'Claude Max 20x'."""
+    if not rate_limit_tier:
+        return "unknown"
+    if rate_limit_tier.startswith("default_"):
+        rate_limit_tier = rate_limit_tier[len("default_"):]
+    tokens = rate_limit_tier.split("_")
+    return " ".join(_PLAN_TOKEN_MAP.get(t, t) for t in tokens)
 
 
 def _parse_iso(ts):
     if ts is None:
         return None
-    # Python <3.11 doesn't accept trailing 'Z' in fromisoformat.
     return datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
 
 
@@ -75,8 +92,26 @@ def _update_window(block, util_g, reset_g):
         reset_g.set(float("nan"))
         return
     _set_or_nan(util_g, block.get("utilization"))
-    reset = _parse_iso(block.get("resets_at"))
-    _set_or_nan(reset_g, reset)
+    _set_or_nan(reset_g, _parse_iso(block.get("resets_at")))
+
+
+_last_plan_labels = None
+
+
+def _update_plan(profile):
+    """Set the plan_info gauge and clear stale labelsets if the plan changed."""
+    global _last_plan_labels
+    org = (profile or {}).get("organization") or {}
+    tier = org.get("rate_limit_tier") or "unknown"
+    status = org.get("subscription_status") or "unknown"
+    org_type = org.get("organization_type") or "unknown"
+    plan = _format_plan_name(tier)
+
+    new_labels = (plan, tier, status, org_type)
+    if _last_plan_labels is not None and _last_plan_labels != new_labels:
+        plan_info.remove(*_last_plan_labels)
+    plan_info.labels(*new_labels).set(1)
+    _last_plan_labels = new_labels
 
 
 def poll_once():
@@ -91,21 +126,25 @@ def poll_once():
             f"claude-usage exit {proc.returncode}: {proc.stderr.strip()[:200]}"
         )
     data = json.loads(proc.stdout)
+    usage = data.get("usage") or {}
+    profile = data.get("profile")
 
-    _update_window(data.get("five_hour"), util_5h, reset_5h_ts)
-    _update_window(data.get("seven_day"), util_7d, reset_7d_ts)
+    _update_window(usage.get("five_hour"), util_5h, reset_5h_ts)
+    _update_window(usage.get("seven_day"), util_7d, reset_7d_ts)
 
-    sonnet = data.get("seven_day_sonnet") or {}
+    sonnet = usage.get("seven_day_sonnet") or {}
     _set_or_nan(util_7d_sonnet, sonnet.get("utilization") if isinstance(sonnet, dict) else None)
 
-    opus = data.get("seven_day_opus") or {}
+    opus = usage.get("seven_day_opus") or {}
     _set_or_nan(util_7d_opus, opus.get("utilization") if isinstance(opus, dict) else None)
 
-    extra = data.get("extra_usage") or {}
+    extra = usage.get("extra_usage") or {}
     if isinstance(extra, dict) and extra.get("is_enabled") and extra.get("utilization") is not None:
         util_extra.set(float(extra["utilization"]))
     else:
         util_extra.set(float("nan"))
+
+    _update_plan(profile)
 
 
 def main():

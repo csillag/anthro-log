@@ -24,7 +24,45 @@
       "fieldConfig": {
         "defaults": {
           "color": {"mode": "thresholds"},
-          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "purple"}]},
+          "noValue": "unknown"
+        },
+        "overrides": [
+          {
+            "matcher": {"id": "byType", "options": "number"},
+            "properties": [
+              {"id": "displayName", "value": "${__field.labels.plan} (${__field.labels.status})"}
+            ]
+          }
+        ]
+      },
+      "gridPos": {"h": 5, "w": 8, "x": 0, "y": 0},
+      "id": 17,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "name"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_plan_info",
+          "legendFormat": "{{plan}} ({{status}})",
+          "refId": "A"
+        }
+      ],
+      "title": "Plan",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
           "max": 100,
           "min": 0,
           "thresholds": {
@@ -39,7 +77,7 @@
           "unit": "percent"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0},
+      "gridPos": {"h": 5, "w": 4, "x": 8, "y": 0},
       "id": 1,
       "options": {
         "minVizHeight": 75,
@@ -77,7 +115,7 @@
           "unit": "s"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0},
+      "gridPos": {"h": 5, "w": 4, "x": 12, "y": 0},
       "id": 2,
       "options": {
         "colorMode": "background",
@@ -117,7 +155,7 @@
           "unit": "percent"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0},
+      "gridPos": {"h": 5, "w": 4, "x": 16, "y": 0},
       "id": 3,
       "options": {
         "minVizHeight": 75,
@@ -155,7 +193,7 @@
           "unit": "s"
         }
       },
-      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 0},
+      "gridPos": {"h": 5, "w": 4, "x": 20, "y": 0},
       "id": 4,
       "options": {
         "colorMode": "background",
@@ -178,147 +216,6 @@
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 70},
-              {"color": "red", "value": 90}
-            ]
-          },
-          "unit": "percent"
-        }
-      },
-      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 5},
-      "id": 5,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "textMode": "auto"
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "claude_subscription_7d_sonnet_utilization_pct",
-          "refId": "A"
-        }
-      ],
-      "title": "7d Sonnet used",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "thresholds"},
-          "max": 100,
-          "min": 0,
-          "noValue": "n/a",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 70},
-              {"color": "red", "value": 90}
-            ]
-          },
-          "unit": "percent"
-        }
-      },
-      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 5},
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "textMode": "auto"
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "claude_subscription_7d_opus_utilization_pct",
-          "refId": "A"
-        }
-      ],
-      "title": "7d Opus used",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "thresholds"},
-          "noValue": "off",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 50}
-            ]
-          },
-          "unit": "percent"
-        }
-      },
-      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 5},
-      "id": 7,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "textMode": "auto"
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "claude_subscription_extra_usage_utilization_pct",
-          "refId": "A"
-        }
-      ],
-      "title": "Extra usage (paid overflow)",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "thresholds"},
-          "mappings": [
-            {"options": {"0": {"color": "red", "text": "FAIL"}, "1": {"color": "green", "text": "OK"}}, "type": "value"}
-          ],
-          "thresholds": {"mode": "absolute", "steps": [{"color": "red"}, {"color": "green", "value": 1}]}
-        }
-      },
-      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 5},
-      "id": 8,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "textMode": "value_and_name"
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "claude_subscription_poll_success",
-          "legendFormat": "poll status",
-          "refId": "A"
-        }
-      ],
-      "title": "Usage poller",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {
-        "defaults": {
           "color": {"mode": "palette-classic"},
           "custom": {
             "axisLabel": "% used",
@@ -334,7 +231,7 @@
           "unit": "percent"
         }
       },
-      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 10},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 5},
       "id": 9,
       "options": {
         "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max", "lastNotNull"]},
@@ -352,18 +249,6 @@
           "expr": "claude_subscription_7d_utilization_pct",
           "legendFormat": "7d window",
           "refId": "B"
-        },
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "claude_subscription_7d_sonnet_utilization_pct",
-          "legendFormat": "7d Sonnet",
-          "refId": "C"
-        },
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "claude_subscription_7d_opus_utilization_pct",
-          "legendFormat": "7d Opus",
-          "refId": "D"
         }
       ],
       "title": "Subscription utilization trend",
@@ -387,7 +272,7 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 18},
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 13},
       "id": 10,
       "options": {
         "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max", "lastNotNull"]},
@@ -422,7 +307,7 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 18},
+      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 13},
       "id": 11,
       "options": {
         "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"]},
@@ -456,7 +341,7 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 27},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 22},
       "id": 12,
       "options": {
         "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max", "lastNotNull"]},
@@ -482,7 +367,7 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 35},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 30},
       "id": 13,
       "options": {
         "colorMode": "value",
@@ -511,7 +396,7 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 35},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 30},
       "id": 14,
       "options": {
         "colorMode": "value",
@@ -539,7 +424,7 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 35},
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 30},
       "id": 15,
       "options": {
         "colorMode": "value",
@@ -568,7 +453,7 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 35},
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 30},
       "id": 16,
       "options": {
         "colorMode": "value",
@@ -597,6 +482,6 @@
   "timezone": "browser",
   "title": "Claude Code — Subscription & Throughput",
   "uid": "claude-code-tokens",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
