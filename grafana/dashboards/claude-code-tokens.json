@@ -23,15 +23,363 @@
       "datasource": {"type": "prometheus", "uid": "prometheus"},
       "fieldConfig": {
         "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 70},
+              {"color": "orange", "value": 85},
+              {"color": "red", "value": 95}
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_5h_utilization_pct",
+          "refId": "A"
+        }
+      ],
+      "title": "5-hour window used",
+      "type": "gauge"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "blue", "value": null},
+              {"color": "green", "value": 60},
+              {"color": "yellow", "value": 1800}
+            ]
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0},
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_5h_reset_timestamp_seconds - time()",
+          "refId": "A"
+        }
+      ],
+      "title": "5h resets in",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 70},
+              {"color": "orange", "value": 85},
+              {"color": "red", "value": 95}
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0},
+      "id": 3,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_7d_utilization_pct",
+          "refId": "A"
+        }
+      ],
+      "title": "7-day window used",
+      "type": "gauge"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "blue", "value": null},
+              {"color": "green", "value": 3600},
+              {"color": "yellow", "value": 86400}
+            ]
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 0},
+      "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_7d_reset_timestamp_seconds - time()",
+          "refId": "A"
+        }
+      ],
+      "title": "7d resets in",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 70},
+              {"color": "red", "value": 90}
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 5},
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_7d_sonnet_utilization_pct",
+          "refId": "A"
+        }
+      ],
+      "title": "7d Sonnet used",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "max": 100,
+          "min": 0,
+          "noValue": "n/a",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 70},
+              {"color": "red", "value": 90}
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 5},
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_7d_opus_utilization_pct",
+          "refId": "A"
+        }
+      ],
+      "title": "7d Opus used",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "noValue": "off",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 50}
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 5},
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_extra_usage_utilization_pct",
+          "refId": "A"
+        }
+      ],
+      "title": "Extra usage (paid overflow)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [
+            {"options": {"0": {"color": "red", "text": "FAIL"}, "1": {"color": "green", "text": "OK"}}, "type": "value"}
+          ],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red"}, {"color": "green", "value": 1}]}
+        }
+      },
+      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 5},
+      "id": 8,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_poll_success",
+          "legendFormat": "poll status",
+          "refId": "A"
+        }
+      ],
+      "title": "Usage poller",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "axisLabel": "% used",
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "max": 100,
+          "min": 0,
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 10},
+      "id": 9,
+      "options": {
+        "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max", "lastNotNull"]},
+        "tooltip": {"mode": "multi", "sort": "desc"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_5h_utilization_pct",
+          "legendFormat": "5h window",
+          "refId": "A"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_7d_utilization_pct",
+          "legendFormat": "7d window",
+          "refId": "B"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_7d_sonnet_utilization_pct",
+          "legendFormat": "7d Sonnet",
+          "refId": "C"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "claude_subscription_7d_opus_utilization_pct",
+          "legendFormat": "7d Opus",
+          "refId": "D"
+        }
+      ],
+      "title": "Subscription utilization trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
           "color": {"mode": "palette-classic"},
           "custom": {
             "axisLabel": "tokens/sec",
             "drawStyle": "line",
             "fillOpacity": 20,
-            "gradientMode": "opacity",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "pointSize": 5,
             "showPoints": "never",
             "spanNulls": true,
             "stacking": {"mode": "none"}
@@ -39,8 +387,8 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 0},
-      "id": 1,
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 18},
+      "id": 10,
       "options": {
         "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max", "lastNotNull"]},
         "tooltip": {"mode": "multi", "sort": "desc"}
@@ -53,7 +401,7 @@
           "refId": "A"
         }
       ],
-      "title": "Token rate by type (1m avg)",
+      "title": "Token rate by type (this machine, 1m avg)",
       "type": "timeseries"
     },
     {
@@ -74,8 +422,8 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 0},
-      "id": 2,
+      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 18},
+      "id": 11,
       "options": {
         "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"]},
         "tooltip": {"mode": "multi", "sort": "desc"}
@@ -88,104 +436,7 @@
           "refId": "A"
         }
       ],
-      "title": "Output token rate by model (30s)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "thresholds"},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [{"color": "green"}, {"color": "red", "value": 80}]
-          },
-          "unit": "short"
-        }
-      },
-      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 9},
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "sum by (type) (claude_code_token_usage_tokens_total)",
-          "legendFormat": "{{type}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Cumulative tokens by type",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "thresholds"},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [{"color": "green"}, {"color": "yellow", "value": 5}, {"color": "red", "value": 25}]
-          },
-          "unit": "currencyUSD"
-        }
-      },
-      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 9},
-      "id": 4,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "sum(claude_code_cost_usage_USD_total)",
-          "refId": "A"
-        }
-      ],
-      "title": "Total cost (USD)",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 2,
-            "showPoints": "always",
-            "spanNulls": true
-          },
-          "unit": "currencyUSD"
-        }
-      },
-      "gridPos": {"h": 5, "w": 12, "x": 12, "y": 9},
-      "id": 5,
-      "options": {
-        "legend": {"displayMode": "list", "placement": "bottom"},
-        "tooltip": {"mode": "single"}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "sum by (model) (claude_code_cost_usage_USD_total)",
-          "legendFormat": "{{model}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Cumulative cost by model",
+      "title": "Output token rate by model (this machine, 30s)",
       "type": "timeseries"
     },
     {
@@ -205,8 +456,8 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 9, "w": 24, "x": 0, "y": 14},
-      "id": 6,
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 27},
+      "id": 12,
       "options": {
         "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["mean", "max", "lastNotNull"]},
         "tooltip": {"mode": "multi", "sort": "desc"}
@@ -219,8 +470,37 @@
           "refId": "A"
         }
       ],
-      "title": "Token deltas per interval (fluctuations)",
+      "title": "Token deltas per interval (this machine, fluctuations)",
       "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green"}]},
+          "unit": "short"
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 35},
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum by (type) (claude_code_token_usage_tokens_total)",
+          "legendFormat": "{{type}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Cumulative tokens by type",
+      "type": "stat"
     },
     {
       "datasource": {"type": "prometheus", "uid": "prometheus"},
@@ -231,14 +511,15 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 23},
-      "id": 7,
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 35},
+      "id": 14,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
         "textMode": "auto"
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {"type": "prometheus", "uid": "prometheus"},
@@ -258,18 +539,20 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 8, "x": 8, "y": 23},
-      "id": 8,
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 35},
+      "id": 15,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
         "textMode": "auto"
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "sum(claude_code_lines_of_code_count_total)",
+          "expr": "sum by (type) (claude_code_lines_of_code_count_total)",
+          "legendFormat": "{{type}}",
           "refId": "A"
         }
       ],
@@ -285,14 +568,15 @@
           "unit": "short"
         }
       },
-      "gridPos": {"h": 4, "w": 8, "x": 16, "y": 23},
-      "id": 9,
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 35},
+      "id": 16,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
         "textMode": "auto"
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {"type": "prometheus", "uid": "prometheus"},
@@ -304,15 +588,15 @@
       "type": "stat"
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 39,
   "tags": ["claude-code"],
   "templating": {"list": []},
-  "time": {"from": "now-1h", "to": "now"},
+  "time": {"from": "now-3h", "to": "now"},
   "timepicker": {},
   "timezone": "browser",
-  "title": "Claude Code — Tokens & Cost",
+  "title": "Claude Code — Subscription & Throughput",
   "uid": "claude-code-tokens",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

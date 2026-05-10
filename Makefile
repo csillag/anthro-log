@@ -3,7 +3,7 @@ COMPOSE    := docker compose
 GF_PORT    ?= 3000
 PROM_PORT  ?= 9090
 
-.PHONY: help init install up down restart status logs logs-otel logs-prom logs-grafana env env-print verify clean reset install-shim uninstall-shim
+.PHONY: help init install up down restart status logs logs-otel logs-prom logs-grafana logs-poller env env-print verify clean reset install-shim uninstall-shim reload-prom rebuild-poller
 
 help:
 	@echo "anthro-log — Claude Code OTel → Prometheus → Grafana"
@@ -19,6 +19,9 @@ help:
 	@echo "  logs-otel      Tail collector logs"
 	@echo "  logs-prom      Tail Prometheus logs"
 	@echo "  logs-grafana   Tail Grafana logs"
+	@echo "  logs-poller    Tail usage-poller logs"
+	@echo "  reload-prom    Hot-reload Prometheus config"
+	@echo "  rebuild-poller Rebuild + restart usage-poller image"
 	@echo "  env            Print 'source' command for Claude Code env"
 	@echo "  env-print      Print env vars (for 'eval')"
 	@echo "  verify         Curl health endpoints"
@@ -70,6 +73,16 @@ logs-prom:
 
 logs-grafana:
 	$(COMPOSE) logs -f --tail=200 grafana
+
+logs-poller:
+	$(COMPOSE) logs -f --tail=200 usage-poller
+
+reload-prom:
+	curl -fsS -X POST http://localhost:$(PROM_PORT)/-/reload && echo "  reloaded"
+
+rebuild-poller:
+	$(COMPOSE) build usage-poller
+	$(COMPOSE) up -d usage-poller
 
 env:
 	@echo "source $(CURDIR)/claude-env.sh"

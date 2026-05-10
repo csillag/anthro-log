@@ -6,15 +6,30 @@ Compose, behind a Makefile.
 
 ## What it shows
 
+**Subscription utilization (cross-machine, from Anthropic's own usage API):**
+- 5-hour session window % used + countdown to reset
+- 7-day rolling window % used + countdown to reset
+- Per-model 7-day breakdown (Sonnet, Opus, extra-usage overflow)
+- Utilization trend over time
+
+**Per-machine throughput (from this machine's Claude Code via OTel):**
 - Token rate (tokens/sec) by type — `input`, `output`, `cacheRead`, `cacheCreation`
 - Output token rate by model
-- Cumulative tokens, cost (USD), sessions, lines of code, commits
+- Cumulative tokens, sessions, lines of code, commits
 - Per-interval token deltas for spotting fluctuations
+
+The subscription panels show your *real* quota consumption across all
+machines and surfaces (claude.ai web, Claude Code on every host). The
+throughput panels only see traffic from the local Claude Code process.
 
 ## Requirements
 
 - Docker + Docker Compose v2
 - Claude Code CLI (`claude`)
+- The [`claude-usage-watcher`](../claude-usage-watcher) tool checked
+  out next to this repo (or override `CLAUDE_USAGE_WATCHER_DIR` in a
+  `.env` file). Its `bin/claude-usage` is bind-mounted into the
+  usage-poller container so subscription quota data can be fetched.
 
 ## Quick start
 
@@ -87,6 +102,7 @@ The collector binds `0.0.0.0:4317` (gRPC) and `0.0.0.0:4318` (HTTP).
 | 4318 | OTLP HTTP (collector ingest) |
 | 8889 | Collector → Prometheus scrape (internal) |
 | 13133 | Collector health check |
+| 9092 | usage-poller (subscription utilization) |
 
 ## Verifying data flow
 

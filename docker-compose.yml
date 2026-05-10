@@ -22,12 +22,33 @@ services:
       - "--storage.tsdb.retention.time=180d"
       - "--web.enable-lifecycle"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      # Mount the directory (not the single file) so editor-style atomic
+      # rewrites of prometheus.yml are visible without restarting the
+      # container. Reload via: curl -X POST http://localhost:9090/-/reload
+      - ./prometheus:/etc/prometheus:ro
       - prometheus-data:/prometheus
     ports:
       - "9090:9090"
     depends_on:
       - otel-collector
+
+  usage-poller:
+    build: ./usage-poller
+    container_name: anthro-log-usage-poller
+    restart: unless-stopped
+    environment:
+      - POLL_INTERVAL_SECONDS=${USAGE_POLL_INTERVAL_SECONDS:-900}
+      - HTTP_PORT=9092
+      - CLAUDE_USAGE_BIN=/opt/claude-usage/claude-usage
+    volumes:
+      # Bind-mount the claude-usage CLI so updates land without rebuilding.
+      - ${CLAUDE_USAGE_WATCHER_DIR:-../claude-usage-watcher}/bin:/opt/claude-usage:ro
+      # Bind-mount the whole ~/.claude dir (NOT just .credentials.json) so the
+      # CLI's atomic refresh-and-rewrite stays on the same filesystem as the
+      # target file. Read-write because the access token periodically rotates.
+      - ${HOME}/.claude:/home/poller/.claude
+    ports:
+      - "9092:9092"
 
   grafana:
     image: grafana/grafana:11.4.0

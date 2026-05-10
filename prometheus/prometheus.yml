@@ -7,6 +7,11 @@ scrape_configs:
     static_configs:
       - targets: ['otel-collector:8889']
 
+  - job_name: 'usage-poller'
+    scrape_interval: 60s   # values change at most every POLL_INTERVAL_SECONDS
+    static_configs:
+      - targets: ['usage-poller:9092']
+
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
