@@ -36,6 +36,13 @@ services:
     build: ./usage-poller
     container_name: anthro-log-usage-poller
     restart: unless-stopped
+    # Pin public resolvers so outbound DNS survives host-network changes
+    # (Docker daemon snapshots host /etc/resolv.conf at daemon-start time;
+    # without this, switching LANs strands the embedded resolver on a
+    # stale upstream and api.anthropic.com lookups fail.)
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     environment:
       - POLL_INTERVAL_SECONDS=${USAGE_POLL_INTERVAL_SECONDS:-900}
       - HTTP_PORT=9092
