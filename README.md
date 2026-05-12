@@ -41,7 +41,7 @@ source ./claude-env.sh          # in every shell that runs 'claude'
 claude                          # run claude as normal
 ```
 
-Open http://localhost:3000 (admin/admin). Dashboard "Claude Code — Tokens & Cost"
+Open http://localhost:9300 (admin/admin). Dashboard "Claude Code — Tokens & Cost"
 appears under the **Claude Code** folder.
 
 ## Auto-load env on every `claude` invocation (optional)
@@ -96,7 +96,7 @@ The collector binds `0.0.0.0:4317` (gRPC) and `0.0.0.0:4318` (HTTP).
 
 | Port | Service |
 |------|---------|
-| 3000 | Grafana UI |
+| 9300 | Grafana UI |
 | 9090 | Prometheus UI |
 | 4317 | OTLP gRPC (collector ingest) |
 | 4318 | OTLP HTTP (collector ingest) |

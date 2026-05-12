@@ -71,7 +71,7 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
       - grafana-data:/var/lib/grafana
     ports:
-      - "3000:3000"
+      - "9300:3000"
     depends_on:
       - prometheus
 

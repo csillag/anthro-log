@@ -1,6 +1,6 @@
 SHELL      := /bin/bash
 COMPOSE    := docker compose
-GF_PORT    ?= 3000
+GF_PORT    ?= 9300
 PROM_PORT  ?= 9090
 
 .PHONY: help init install up down restart status logs logs-otel logs-prom logs-grafana logs-poller env env-print verify clean reset install-shim uninstall-shim reload-prom rebuild-poller
