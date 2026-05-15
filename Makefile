@@ -13,7 +13,7 @@ help:
 	@echo "  install        Pull docker images"
 	@echo "  up             Start stack (detached)"
 	@echo "  down           Stop stack (keep volumes)"
-	@echo "  restart        Restart stack"
+	@echo "  restart        Full restart: down + up (recovers stopped containers)"
 	@echo "  status         Container status"
 	@echo "  logs           Tail all logs"
 	@echo "  logs-otel      Tail collector logs"
@@ -57,7 +57,9 @@ down:
 	$(COMPOSE) down
 
 restart:
-	$(COMPOSE) restart
+	$(COMPOSE) down
+	$(COMPOSE) up -d
+	@$(MAKE) --no-print-directory status
 
 status:
 	@$(COMPOSE) ps
